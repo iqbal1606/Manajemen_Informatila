@@ -1,3 +1,13 @@
+<?php
+include "controller/koneksi.php";
+$sql_sosmed = "SELECT * FROM sosmed";
+
+$query_sosmed = mysqli_query($conn, $sql_sosmed);
+
+if (!$query_sosmed) {
+    die('SQL Error: ' . mysqli_error($conn));
+}
+?>
 <title>Data Sosial Media</title>
 <!-- Page Heading -->
 <ol class="breadcrumb">
@@ -15,7 +25,7 @@
     <div class="col-12">
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">List Sosil Media</h6>
+                <h6 class="m-0 font-weight-bold text-primary">List Sosial Media</h6>
                 <br>
                 <a class="btn btn-success" href="#" role="button" data-toggle="modal"
                     data-target="#tambahdatasosmedModal">Tambah Data</a>
@@ -32,13 +42,17 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php
+                            $no = 1;
+                            while ($data_sosmed = mysqli_fetch_assoc($query_sosmed)) {
+                            ?>
                             <tr>
-                                <td>1</td>
-                                <td>Facebook</td>
-                                <td>facebook.com</td>
+                                <td><?php echo $no; ?></td>
+                                <td><?php echo $data_sosmed['nama_sosmed']; ?></td>
+                                <td><?php echo $data_sosmed['link_sosmed']; ?></td>
                                 <td>
-                                    <a class="btn btn-primary" href="#" role="button" data-toggle="modal" data-target="#editdatasosmedModal">Ubah</a>
-                                    <a class="btn btn-danger" href="#" role="button" data-toggle="modal" data-target="#hapusdatasosmedModal">Hapus</a>
+                                    <a class="btn btn-primary" href="#" role="button" data-toggle="modal" data-target="#editdatasosmedModal<?=$no?>">Ubah</a>
+                                    <a class="btn btn-danger" href="#" role="button" data-toggle="modal" data-target="#hapusdatasosmedModal<?=$no?>">Hapus</a>
                                 </td>
                             </tr>
 
@@ -56,20 +70,20 @@
                                             </button>
                                         </div>
                                         <div class="card-body">
-                                            <form action="controller/pegawai.php" method="post"
+                                            <form action="controller/sosmed.php" method="post"
                                                 enctype="multipart/form-data" id="frm-mhs">
-                                                <input type="hidden" name="id_pegawai"
-                                                    value="">
+                                                <input type="hidden" name="id_sosmed"
+                                                    value="<?php echo $data_sosmed['id_sosmed']; ?>">
                                                 <div class="form-group">
                                                     <label>Nama</label>
                                                     <input type="text" class="form-control" name="nama_sosmed"
-                                                        value="Facebook"
+                                                        value="<?php echo $data_sosmed['nama_sosmed']; ?>"
                                                         class="required" />
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Link Sosmed</label>
                                                     <input type="text" class="form-control"
-                                                        value="facebook.com"
+                                                        value="<?php echo $data_sosmed['link_sosmed']; ?>"
                                                         name="link_sosmed" class="required" />
                                                 </div>
                                                 <div class="modal-footer">
@@ -88,7 +102,7 @@
 
                             <!-- hapus data -->
 
-                            <div class="modal fade" id="hapusdatasosmedModal" tabindex="-1" role="dialog"
+                            <div class="modal fade" id="hapusdatasosmedModal<?=$no?>" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -98,9 +112,9 @@
                                                 <span aria-hidden="true">×</span>
                                             </button>
                                         </div>
-                                        <form action="controller/pegawai.php" method="post">
-                                            <input type="hidden" name="id_pegawai"
-                                                value="">
+                                        <form action="controller/sosmed.php" method="post">
+                                            <input type="hidden" name="id_sosmed"
+                                                value="<?php echo $data_sosmed['id_sosmed']; ?>">
                                             <div class="modal-footer">
                                                 <button class="btn btn-primary" type="button"
                                                     data-dismiss="modal">Batal</button>
@@ -112,6 +126,12 @@
 
 
                             </div>
+
+
+                            <?php
+                                $no++; //untuk nomor urut terus bertambah 1
+                            }
+                            ?>
 
 
 
@@ -137,14 +157,14 @@
                     </button>
                 </div>
                 <div class="card-body">
-                    <form action="controller/pegawai.php" method="post" enctype="multipart/form-data" id="frm-mhs">
+                    <form action="controller/sosmed.php" method="post" enctype="multipart/form-data" id="frm-mhs">
                         <div class="form-group">
                             <label>Nama</label>
                             <input type="text" class="form-control" name="nama_sosmed" class="required" />
                         </div>
                         <div class="form-group">
                             <label>Link</label>
-                            <input type="number" class="form-control" name="link_sosemd" class="required" />
+                            <input type="text" class="form-control" name="link_sosmed" class="required" />
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
